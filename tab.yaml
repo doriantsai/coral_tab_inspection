@@ -1,0 +1,16 @@
+name: tab
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - numpy
+  - seaborn
+  - matplotlib
+  - pip
+  - pandas
+  - pillow
+  - scipy
+  - scikit-image
+  - scikit-learn
+  - opencv>=4.6
