@@ -12,14 +12,15 @@ class coral_tab_detector:
     def __init__(self,
                  save_dir,
                  model_path,
-                 conf_thresh=0.3):
+                 conf_thresh=0.3,
+                 device='cpu'):
         # self.img_name = img_name
         self.save_dir = save_dir
         os.makedirs(self.save_dir, exist_ok=True)
 
         self.model_path = model_path
         self.conf_thresh = conf_thresh
-        self.detection_model = self.load_model(self.model_path)
+        self.detection_model = self.load_model(self.model_path, device=device)
 
         self.slice_height=640
         self.slice_width=640
@@ -35,6 +36,7 @@ class coral_tab_detector:
 
         self.text_size_overall=0.6
         self.rect_th_overall=2
+        
 
 
     def load_model(self, model_path, device='cpu'):
@@ -116,7 +118,7 @@ class coral_tab_detector:
         grid_size = int(np.sqrt(len(sorted_images)))  # Assuming a square layout
 
         # plot slices with predictions in an array
-        fig, axes = plt.subplots(grid_size, grid_size, figsize=(10, 10))
+        fig, axes = plt.subplots(grid_size, grid_size, figsize=(20, 20))
         axes = axes.flatten()
 
         for i, img in enumerate(sorted_images):
@@ -132,23 +134,24 @@ class coral_tab_detector:
 if __name__ == '__main__':
 
     
-    model_path = '/home/dtsai/Data/victis_datasets/coral_detection_model/20240206_cgras_best.pt'
-    save_dir = './output2'
-
-    detector = coral_tab_detector(save_dir=save_dir,
-                                  model_path=model_path)
-    
-    img_dir = '/home/dtsai/Data/victis_datasets/coral_tab_image'
+    img_dir = '/home/dtsai/Data/victis_datasets/coral_tab_simulated_images'
     img_list = sorted(Path(img_dir).rglob('*.jpg'))
     img_list = [str(path) for path in img_list]
     print(img_list)
+    idx=1
+    print(f'IMAGE SELECTED: {idx}: {img_list[idx]}')
 
+    model_path = '/home/dtsai/Data/victis_datasets/coral_detection_model/20240206_cgras_best.pt'
+    save_dir = os.path.join('output', os.path.basename(img_list[idx])[:-4])
+
+    detector = coral_tab_detector(save_dir=save_dir,
+                                  model_path=model_path,
+                                  device='cuda:0')
     
-    idx=0
     detector.predict_for_slices(img_name=img_list[idx],
                                 save_predicted_slice_array_name=os.path.join(save_dir, os.path.basename(img_list[idx])[:-4]+'_slice_array'))
 
-    sliced_results = detector.predict_overall(img_name=img_list[0],
+    sliced_results = detector.predict_overall(img_name=img_list[idx],
                                               save_file=os.path.basename(img_list[idx])[:-4]+'_combined')
 
     import code
