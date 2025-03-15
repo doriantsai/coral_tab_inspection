@@ -14,3 +14,4 @@ dependencies:
   - scikit-image
   - scikit-learn
   - opencv>=4.6
+  - ipykernel
