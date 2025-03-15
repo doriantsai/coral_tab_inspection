@@ -4,11 +4,15 @@ channels:
   - defaults
 dependencies:
   - python=3.9
+  - ultralytics
+  - pytorch
+  - sahi
   - numpy
   - seaborn
   - matplotlib
   - pip
   - pandas
+  - torchvision
   - pillow
   - scipy
   - scikit-image
